@@ -36,16 +36,6 @@ Version numbers follow council from Rich Hickey's talk [Spec-ulation](https://ww
 ## <a name="contributing"></a>Contributing
 
 When contributing please take care to follow to follow the practice explained in the [version numbers](#version-numbers) section above.
- 
-## TODO
-
-These are tasks that I plan to do in the coming weeks.
-
-- Unit tests.
-- Add entities with an unnamed key.
-- Build out system a bit more.
-
-(I'll be using this in another project and will add features as I need them.)
 
 ## License
 

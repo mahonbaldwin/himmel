@@ -37,14 +37,23 @@
     values))
 
 ;take a map and do all the steps for me
-(defn make-entity [ds kind name values]
-  (let [e-key     (entity-key ds kind name)
-        e-builder (entity-with-values (entity-builder e-key) values)]
-    (build e-builder)))
+(defn make-entity
+  ([ds kind values]
+   (let [e-key (entity-key ds kind)
+         e-builder (entity-with-values (entity-builder e-key) values)]
+     (build e-builder)))
+  ([ds kind name values]
+   (let [e-key     (entity-key ds kind name)
+         e-builder (entity-with-values (entity-builder e-key) values)]
+     (build e-builder))))
 
 (defn put-entity [datastore entity]
   (println "upserting" (.toString entity))
   (GCloudWrapper/putEntity datastore entity))
+
+(defn add-entity [datastore entity]
+  (println "adding" (.toString entity))
+  (GCloudWrapper/addEntity datastore entity))
 
 (defmethod set-kv clojure.lang.PersistentVector [builder key value & options]
   (if (= key :abc) (println "options for :abc" options))
@@ -70,6 +79,11 @@
 
 
 
+(defn ax []
+  (add-entity datastore
+    (make-entity datastore "Thing" {:str-1 "This is a string"
+                                    :vec [1 2 3]})))
+
 
 (defn wox []
   (let [ds        datastore
@@ -88,7 +102,7 @@
 (defn wor []
   (put-entity datastore
     (make-entity datastore "Thing" "thing-2" {:str-1  "aaaaaaaaaaaaaa LONG string!"
-                                              :abc         {:val ["a" "b" "c" "d" "e" "f"] :indexed false}
+                                              :abc         {:val ["a" "b" "c" "d" "e" "f"]}
                                               :one         [1 2 3 4 5]
                                               :another-map (make-entity datastore "smaller-thing" "small-thing" {:a 1
                                                                                                                  :b      2})})))
