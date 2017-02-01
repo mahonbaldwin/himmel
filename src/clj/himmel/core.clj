@@ -47,14 +47,6 @@
          e-builder (entity-with-values (entity-builder e-key) values)]
      (build e-builder))))
 
-(defn put-entity [datastore entity]
-  (println "upserting" (.toString entity))
-  (GCloudWrapper/putEntity datastore entity))
-
-(defn add-entity [datastore entity]
-  (println "adding" (.toString entity))
-  (GCloudWrapper/addEntity datastore entity))
-
 (defmethod set-kv clojure.lang.PersistentVector [builder key value & options]
   (if (= key :abc) (println "options for :abc" options))
   (let [{:keys [indexed]} (value-map (apply hash-map options))
@@ -72,46 +64,20 @@
   (let [{:keys [indexed]} (value-map (apply hash-map options))]
     (GCloudWrapper/setKV builder (name key) value indexed)))
 
+(defn get-key [entity]
+  (GCloudWrapper/getKey entity))
+
 (defn get-entity [datastore key]
   (GCloudWrapper/getEntity datastore key))
 
+(defn add-entity [datastore entity]
+  (println "adding" (.toString entity))
+  (GCloudWrapper/addEntity datastore entity))
 
+(defn put-entity [datastore entity]
+  (println "upserting" (.toString entity))
+  (GCloudWrapper/putEntity datastore entity))
 
-
-
-(defn ax []
-  (add-entity datastore
-    (make-entity datastore "Thing" {:str-1 "This is a string"
-                                    :vec [1 2 3]})))
-
-
-(defn wox []
-  (let [ds        datastore
-        thing-key (entity-key ds "Thing" "thing-1")
-        thing     (-> (entity-builder thing-key)
-                      (set-kv "string1" "value1" :indexed false)
-                      (set-kv "boolean1" true)
-                      (set-kv "int1" 5)
-                      (set-kv "null1" nil :indexed false)
-                      (set-kv "date1" (Date.))
-                      (set-kv "array1" ["this" "is" "an" "array"])
-                      (set-kv "array2" [1 2 3 4 5])
-                      (build))]
-    (put-entity ds thing)))
-
-(defn wor []
-  (put-entity datastore
-    (make-entity datastore "Thing" "thing-2" {:str-1  "aaaaaaaaaaaaaa LONG string!"
-                                              :abc         {:val ["a" "b" "c" "d" "e" "f"]}
-                                              :one         [1 2 3 4 5]
-                                              :another-map (make-entity datastore "smaller-thing" "small-thing" {:a 1
-                                                                                                                 :b      2})})))
-
-(defn x []
-  (put-entity datastore
-    (make-entity datastore "Task" "task-1" {:task-name "Eat a worm."
-                                            :done false})))
-
-(defn gox [type name]
-  (get-entity datastore (entity-key datastore type name)))
-
+(defn update-entity [datastore entity]
+  (println "updating" (.toStirng entity))
+  (GCloudWrapper/updateEntity datastore entity))

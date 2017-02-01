@@ -1,5 +1,6 @@
 (defproject himmel "1.0.0-SNAPSHOT"
   :description "Clojure wrapper for Google Datastore"
+  :url "https://github.com/mahonbaldwin/himmel"
   :min-lein-version "2.0.0"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

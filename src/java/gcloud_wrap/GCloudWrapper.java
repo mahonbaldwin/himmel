@@ -87,6 +87,7 @@ public class GCloudWrapper {
         // Exclude from indexes cannot be set on a list value
         return builder.set(key, value);
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, List value, boolean indexed) {
         // Exclude from indexes cannot be set on a list value
         return builder.set(key, value);
@@ -96,6 +97,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, boolean value, boolean indexed) {
         return builder.set(key, BooleanValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, boolean value, boolean indexed) {
         return builder.set(key, BooleanValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -104,6 +106,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, Blob value, boolean indexed) {
         return builder.set(key, BlobValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Blob value, boolean indexed) {
         return builder.set(key, BlobValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -113,6 +116,7 @@ public class GCloudWrapper {
         DateTime dt = DateTime.copyFrom(value);
         return builder.set(key, DateTimeValue.newBuilder(dt).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Date value, boolean indexed) {
         DateTime dt = DateTime.copyFrom(value);
         return builder.set(key, DateTimeValue.newBuilder(dt).setExcludeFromIndexes(!indexed).build());
@@ -122,6 +126,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, Entity value, boolean indexed) {
         return builder.set(key, EntityValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Entity value, boolean indexed) {
         return builder.set(key, EntityValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -130,6 +135,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, Double value, boolean indexed) {
         return builder.set(key, DoubleValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Double value, boolean indexed) {
         return builder.set(key, DoubleValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -138,6 +144,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, LatLng value, boolean indexed) {
         return builder.set(key, LatLngValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, LatLng value, boolean indexed) {
         return builder.set(key, LatLngValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -146,6 +153,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, Long value, boolean indexed) {
         return builder.set(key, LongValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Long value, boolean indexed) {
         return builder.set(key, LongValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -154,6 +162,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, Key value, boolean indexed) {
         return builder.set(key, KeyValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, Key value, boolean indexed) {
         return builder.set(key, KeyValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
@@ -162,6 +171,7 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKVnull(Entity.Builder builder, String key, boolean indexed) {
         return builder.setNull(key);
     }
+
     public static BaseEntity.Builder setKVnull(FullEntity.Builder builder, String key, boolean indexed) {
         return builder.setNull(key);
     }
@@ -170,35 +180,51 @@ public class GCloudWrapper {
     public static BaseEntity.Builder setKV(Entity.Builder builder, String key, String value, boolean indexed) {
         return builder.set(key, StringValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
     }
+
     public static BaseEntity.Builder setKV(FullEntity.Builder builder, String key, String value, boolean indexed) {
         return builder.set(key, StringValue.newBuilder(value).setExcludeFromIndexes(!indexed).build());
+    }
+
+    public static Key getKey(Entity entity) {
+        return entity.getKey();
     }
 
     public static Entity.Builder entityBuilder(Key entityKey) {
         return Entity.newBuilder(entityKey);
     }
 
-    public static FullEntity.Builder entityBuilder(IncompleteKey entityKey){
+    public static FullEntity.Builder entityBuilder(IncompleteKey entityKey) {
         return FullEntity.newBuilder(entityKey);
     }
 
-    public static FullEntity build(FullEntity.Builder eb){
+    public static FullEntity build(FullEntity.Builder eb) {
         return eb.build();
     }
+
     public static Entity build(Entity.Builder eb) {
         return eb.build();
     }
 
-    public static Key putEntity(Datastore ds, Entity entity) {
-        return ds.put(entity).getKey();
-    }
-
-    //TODO fix this too
-    public static Key addEntity(Datastore ds, FullEntity entity){
-        return ds.add(entity).getKey();
-    }
-
-    public static Entity getEntity(Datastore ds, Key entityKey){
+    public static Entity getEntity(Datastore ds, Key entityKey) {
         return ds.get(entityKey);
+    }
+
+    public static Entity putEntity(Datastore ds, Entity entity) {
+        return ds.put(entity);
+    }
+
+    public static Entity addEntity(Datastore ds, FullEntity entity) {
+        return ds.add(entity);
+    }
+
+    //TODO add list
+
+    public static Entity updateEntity(Datastore ds, Entity entity) {
+        ds.update(entity);
+        return entity;
+    }
+
+    public static void deleteEntity(Datastore ds, Key entityKey) {
+        ds.delete(entityKey);
     }
 }

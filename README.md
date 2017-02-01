@@ -2,6 +2,8 @@
 
 A basic wrapper for Google Cloud Datastore.
 
+[![Clojars Project](https://img.shields.io/clojars/v/himmel.svg)](https://clojars.org/himmel)
+
 ## Why?
 
 In addition to providing a convenient wrapper for developers writing Clojure, using the Java interop will not work for the Google Cloud Datastore library because of heavy use of the Builder Pattern which is not always compatible with Clojure's use of reflection. Some parts work, but I wasn't able to get very far before I started to get Exceptions with the message, "Can't call public method of non-public class." [More information on this problem.](http://stackoverflow.com/questions/38059977/cant-call-public-method-of-non-public-class-public-google-gcloud-library) 
