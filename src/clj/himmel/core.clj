@@ -1,7 +1,9 @@
 (ns himmel.core
   (:import
     (gcloud_wrap GCloudWrapper)
-    (java.util Date)))
+    (java.util Date)
+    (com.google.common.collect RegularImmutableList)
+    (com.google.cloud.datastore Key)))
 
 (def datastore GCloudWrapper/datastore)
 
@@ -14,7 +16,10 @@
   ([datastore kind]
    (GCloudWrapper/entityKey datastore kind))
   ([datastore kind name]
-   (GCloudWrapper/entityKey datastore kind name)))
+   (let [t (type name)]
+     (cond
+       (= t java.lang.Long) (GCloudWrapper/entityKeyLong datastore kind name)
+       (= t java.lang.String) (GCloudWrapper/entityKey datastore kind name)))))
 
 (defn entity-builder [entity-key]
   (GCloudWrapper/entityBuilder entity-key))
@@ -39,7 +44,7 @@
 ;take a map and do all the steps for me
 (defn make-entity
   ([ds kind values]
-   (let [e-key (entity-key ds kind)
+   (let [e-key     (entity-key ds kind)
          e-builder (entity-with-values (entity-builder e-key) values)]
      (build e-builder)))
   ([ds kind name values]
@@ -60,15 +65,41 @@
   (let [{:keys [indexed]} (value-map (apply hash-map options))]
     (GCloudWrapper/setKVnull builder (name key) indexed)))
 
-(defmethod set-kv :default [builder key value &  options]
+(defmethod set-kv :default [builder key value & options]
   (let [{:keys [indexed]} (value-map (apply hash-map options))]
     (GCloudWrapper/setKV builder (name key) value indexed)))
+
+(defn get-value [entity name]
+  (let [v (.get (GCloudWrapper/getValue entity name))]
+    (if (= (type v) RegularImmutableList)
+      (map #(.get %) v)
+      v)))
+
+(defn get-names [entity]
+  (GCloudWrapper/getNames entity))
+
+(defn ent->clj [entity]
+  (reduce (fn [em value-name]
+            (let [val (get-value entity value-name)]
+              (into em {(keyword value-name) val})))
+    {}
+    (get-names entity)))
 
 (defn get-key [entity]
   (GCloudWrapper/getKey entity))
 
-(defn get-entity [datastore key]
-  (GCloudWrapper/getEntity datastore key))
+(defn get-entity
+  ([datastore key]
+   (GCloudWrapper/getEntity datastore key))
+  ([datastore type id]
+   (GCloudWrapper/getEntity datastore (entity-key datastore type id))))
+
+(defn get-data
+  ([datastore key]
+   (ent->clj (get-entity datastore key)))
+  ([datastore type id]
+   (ent->clj (get-entity datastore type id))))
+
 
 (defn add-entity [datastore entity]
   (println "adding" (.toString entity))
@@ -81,3 +112,9 @@
 (defn update-entity [datastore entity]
   (println "updating" (.toStirng entity))
   (GCloudWrapper/updateEntity datastore entity))
+
+(defn delete-entity [datastore entity]
+  (println "deleting" (.toString entity))
+  (cond
+    (= (type entity) Key) (GCloudWrapper/deleteEntity datastore entity)
+    :else (GCloudWrapper/deleteEntity datastore (get-key entity))))

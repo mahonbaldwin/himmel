@@ -6,6 +6,7 @@ import com.google.datastore.v1.ArrayValueOrBuilder;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 public class GCloudWrapper {
@@ -20,7 +21,7 @@ public class GCloudWrapper {
         return ds.newKeyFactory().setKind(kind).newKey(name);
     }
 
-    public static Key entityKey(Datastore ds, String kind, Long id) {
+    public static Key entityKeyLong(Datastore ds, String kind, Long id) {
         return ds.newKeyFactory().setKind(kind).newKey(id);
     }
 
@@ -79,6 +80,14 @@ public class GCloudWrapper {
     //Text string
     public static Value valueFor(String value) {
         return new StringValue(value);
+    }
+
+    public static Value getValue(Entity entity, String name) {
+        return entity.getValue(name);
+    }
+
+    public static Set getNames(Entity entity) {
+        return entity.getNames();
     }
 
     //setKVs
@@ -217,7 +226,7 @@ public class GCloudWrapper {
         return ds.add(entity);
     }
 
-    //TODO add list
+    //TODO add list of entities
 
     public static Entity updateEntity(Datastore ds, Entity entity) {
         ds.update(entity);

@@ -19,16 +19,48 @@ Pull requests are welcome if you would like to add to this wrapper. If you're in
 ### <a name="add-entity"></a>Add Entity to Datastore
 
     (def ds himmel/datastore)
+    
+    (add-entity ds
+        (make-entity ds "Task" {:task-name "Eat a worm."
+                                :done false}))
+    ;=> Datastore Entity
+                                    
+This will create a new entity. And return the id. To get the key of an entity:
+
+    (get-key entity)
+    ;=> Datastore Key
+    
+### <a name="put-entity"></a>Put Entity to Datastore
      
     (put-entity ds
         (make-entity ds "Task" "task-1" {:task-name "Eat a worm."
                                          :done false}))
+    ;=> Datastore Entity
 
-This will create a new entity with type `Task` and key `task-1`.
+This will create or replace and entity with type `Task` and key `task-1`.
 
 ### <a name="get-entity"></a>Get an entity
 
+    (let [e (get-entity ds (entity-key ds "Task" "task-1"))]
+          ; e = Datastore Entity
+       (ent->clj e))
+    ;=> {:task-name "Eat a worm." :done false}
+    
+Or you can use a shortcut to get a Clojure data structure
+
+    (get-data ds (entity-key ds "Task" "task-1")
+    ;=> {:task-name "Eat a worm." :done false}
+    
+### <a name="delete-entity"></a>Delete an entity
+    
+    (delete-entity ds (entity-key ds "Task" "task-1"))
+    ; or 
+    (delete-entity ds entity)
+    ;=> nil
+     
     (get-entity ds (entity-key ds "Task" "task-1"))
+    ;=> nil
+
     
 
 ## <a name="version-numbers"></a>Version Numbers
